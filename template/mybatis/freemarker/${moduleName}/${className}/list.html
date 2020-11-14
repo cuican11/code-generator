@@ -1,0 +1,122 @@
+[#ftl] [#include '/share.include'] <#include "/admin/management/_frag/pager/pagerForm.html" >
+<script>
+	$(document).ready(
+            function() {
+	            $("#moreS[@el2 "pageId"/]").show();
+	            sh =
+	                    $('#searchHeader[@el2 "pageId"/]').height() - $("#desc[@el2 "pageId"/]").height()
+	                            - $(".subBar").height();
+	            $("#moreS[@el2 "pageId"/]").hide();
+            });
+
+    var sh;
+    function vali[@el2 "pageId"/](form) {
+	    if (!$(form).valid()) return false;
+	    return navTabSearch(form);
+    }
+    function openSearch[@el2 "pageId"/](btn) {
+	    /*  $.pdialog.open('${moduleName}/[@el2 "pageId"/]/query' , 'sdf' , '查询' , {minable: false , mask: true , close: '' ,
+	         param: "{msg:'message'}"
+	     }); */
+
+	    $this = $(btn);
+
+	    //alert($('#searchHeader[@el2 "pageId"/]').height()+','+sh);
+	    if ($this.text() == '显示检索区') {
+		    // alert(sh);
+		    $this.text('隐藏检索区');
+		    $("#moreS[@el2 "pageId"/]").show();
+		    var $panel = $this.parents('.unitBox:first').find("[layoutH]").each(function() {
+			    $(this).attr("layoutH" , parseInt($(this).attr("layoutH")) + sh);
+			    $(this).layoutH();
+		    });
+	    } else {
+		    // alert(sh);
+		    $this.text('显示检索区');
+		    $("#moreS[@el2 "pageId"/]").hide();
+		    var $panel = $this.parents('.unitBox:first').find("[layoutH]").each(function() {
+			    $(this).attr("layoutH" , parseInt($(this).attr("layoutH")) - sh);
+			    $(this).layoutH();
+		    });
+	    }
+	    //alert($this.parents('.unitBox:first').find("[layoutH]").height());
+	    return false;
+    }
+</script>
+
+<form method="post" rel="pagerForm" class="pageForm required-validate" action="<@s.url '/admin/${moduleName}/${classNameLow}'/>"
+    onsubmit="return vali[@el2 "pageId"/](this)">
+    <div id='searchHeader[@el2 "pageId"/]' class="pageHeader">
+        <div class="searchBar">
+            <div id='desc[@el2 "pageId"/]' class="subBar">由${sqlName }生成</div>
+            <ul class="searchContent" style='display:none;overflow: visible;' id='moreS[@el2 "pageId"/]'>
+                <li><label>
+                        已删除:<input type="checkbox" name="deleted"<#if vo.deleted> checked</#if> />
+                    </label></li>
+                <li><label>生成时间起：</label> <input type="text" name="createTime1" class="date" dateFmt="yyyy-MM-dd HH:mm" value="[@el2 "
+                    (vo.createTime1?string('yyyy-MM-dd HH:mm'))!"/]" /></li>
+                <li><label>生成时间止：</label> <input type="text" name="createTime2" class="date" dateFmt="yyyy-MM-dd HH:mm" value="[@el2 "
+                    (vo.createTime2?string('yyyy-MM-dd HH:mm'))!"/]" /></li>
+            </ul>
+            <div class="subBar">
+                <ul>
+                    <li>
+                        <div class="buttonActive">
+                            <div class="buttonContent">
+                                <button type="submit">搜索</button>
+                            </div>
+                        </div>
+                        <div class="buttonActive">
+                            <div class="buttonContent">
+                                <button type='button' onclick='openSearch[@el2 "pageId"/](this)'>显示检索区</button>
+                            </div>
+                        </div>
+                        <div class="buttonActive">
+                            <div class="buttonContent">
+                                <button type="reset">重置</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="pageContent">
+
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="add " target="navTab" rel=[@el2 "pageId"/]add href="<@s.url '/admin/${moduleName}/${classNameLow}/insert?handler=show'/>" title="添加"><span>添加</span></a></li>
+            <li><a class="edit" target="navTab" rel=[@el2 "pageId"/]edit href="<@s.url '/admin/${moduleName}/${classNameLow}/update?handler=show&id={slt_objId}'/>" title="编辑"><span>编辑</span></a></li>
+            <#if !vo.deleted>
+            <li><a class="delete" target="selectedTodo" rel='ids' postType="string" href="<@s.url '/admin/${moduleName}/${classNameLow}/delete'/>"
+                title="你确定要删除吗?"><span>删除</span></a></li> </#if>
+            <li class="line">line</li>
+        </ul>
+    </div>
+    <table class="list" width="98%" layoutH="113">
+        <thead>
+            <tr style='white-space: nowrap;'>
+                <th width="22">
+                    <input type="checkbox" group="ids" class="checkboxCtrl">
+                </th>[#list columns as column] [#if column.columnNameFirstLower ='isDel'][#else]
+                <th orderField=${column.sqlName } class="[@el2 " (vo.orderField??&&vo.orderField='${column.sqlName}' ) ? string(vo.orderDirection , '')"/]">${column.remarksFirst
+                }
+                </th> [/#if][/#list]
+            </tr>
+        </thead>
+        <tbody>
+            <#if ${classNameLow}List??> <#list ${classNameLow}List as item>
+            <tr target="slt_objId" rel="[@el2 'item.id' /]">
+                <td><input name="ids" type="checkbox" value="[@el2 'item.id '/]"></td> [#list columns as column] [#if
+                column.possibleShortJavaType ='Date']
+                <td>[@el2 '(item.${column.columnNameFirstLower }?string("yyyy-MM-dd HH:mm"))!' /]</td> [#elseif column.columnNameFirstLower
+                ='isDel'][#else]
+                <td>[@el2 '(item.${column.columnNameFirstLower })!'/]</td>[/#if][/#list]
+            </tr> </#list></#if>
+        </tbody>
+    </table>
+
+    <#include "/admin/management/_frag/pager/panelBar.html">
+</div>

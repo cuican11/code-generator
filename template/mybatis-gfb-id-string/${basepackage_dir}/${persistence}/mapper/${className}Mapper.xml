@@ -1,0 +1,150 @@
+<#include '/share.include'>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<#assign idJavaType = idColumn.javaType>
+<#assign model="${basepackage}.bean.${className}">
+
+<!-- author:   ${author},  date:    ${.now?datetime},    ${table.remarks}-->
+
+<mapper namespace="${basepackage}.dao.impl.${className}DaoImpl" >
+<resultMap id="BaseResultMap" type="${model}" >
+    <#list columns as column>
+    <result property="${column.columnNameFirstLower}" jdbcType="${column.jdbcType}" column="${column.sqlName}"/>
+</#list>
+</resultMap>
+<sql id="Base_Column_List" >
+<#list columns as column>
+${column.sqlName}<#sep>,
+</#list>
+
+        </sql>
+<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="${idJavaType}" >
+select
+<include refid="Base_Column_List" />
+from ${sqlName}
+where  <#list pkColumns as column>
+${column.sqlName} = <@el1 column.columnNameFirstLower/> <#sep> AND
+</#list>
+<#list columns as column>
+<#if column.sqlName = 'is_del'>
+        and is_del = 0
+        </#if>
+        </#list>
+        </select>
+<delete id="deleteByPrimaryKey" parameterType="${idJavaType}" >
+delete from ${sqlName}
+where  <#list pkColumns as column>
+${column.sqlName} = <@el1 column.columnNameFirstLower/> <#sep> AND
+</#list>
+
+        </delete>
+<insert id="insert" parameterType="${model}" useGeneratedKeys="true" keyProperty="${idColumn.columnNameFirstLower}">
+insert into ${sqlName} (<include refid="Base_Column_List" />
+)
+values (
+<#list columns as column>
+<#if column.pk>
+null,<!--主键自动生成  -->
+<#elseif column.columnNameFirstLower='createTime'>
+now(),<!--生成日期  -->
+<#else>
+<@el1 column.columnNameFirstLower/><#sep>,
+</#if>
+        </#list>
+        )
+        </insert>
+<insert id="insertSelective" parameterType="${model}" useGeneratedKeys="true" keyProperty="${idColumn.columnNameFirstLower}">
+insert into ${sqlName}
+<trim prefix="(" suffix=")" suffixOverrides="," >
+    <#list columns as column>
+    <if test=" ${column.columnNameFirstLower} != null" >
+        ${column.sqlName},
+    </if>
+</#list>
+</trim>
+<trim prefix="values (" suffix=")" suffixOverrides="," >
+<#list columns as column>
+<if test=" ${column.columnNameFirstLower} != null" >
+    <@el1 column.columnNameFirstLower/>,
+</if>
+</#list>
+        </trim>
+        </insert>
+<update id="updateByPrimaryKeySelective" parameterType="${model}" >
+UPDATE ${sqlName}
+<set>
+    <#list notPkColumns as column>
+    <#if column.columnNameFirstLower!='updateTime'>
+    <if test="${column.columnNameFirstLower}!=null">
+        ${column.sqlName} = <@el1 column.columnNameFirstLower/>,
+    </if>
+</#if>
+</#list>
+        </set>
+        WHERE
+<#list pkColumns as column>
+        ${column.sqlName} = <@el1 column.columnNameFirstLower/><#sep> AND
+        </#list>
+
+        </update>
+<update id="updateByPrimaryKey" parameterType="${model}" >
+    update ${sqlName} set
+    <#list notPkColumns as column>
+    <#if column.columnNameFirstLower!='updateTime'>
+    ${column.sqlName} = <@el1 column.columnNameFirstLower/><#sep>,
+</#if>
+        </#list>
+
+        where
+<#list pkColumns as column>
+        ${column.sqlName} = <@el1 column.columnNameFirstLower/> <#sep> AND
+        </#list>
+
+        </update>
+
+        <!--查询条件-->
+<sql id="selectCondition">
+<where>
+    <trim suffixOverrides="and">
+        <!--
+      <if test=" entity != null">
+        <if test="entity.id!=null">
+          and id=${r"#{entity.id}"}
+        </if>
+      </if>
+       -->
+        <#list columns as column>
+        <#if column.sqlName = 'is_del'>
+        and is_del = 0
+    </#if>
+</#list>
+</trim>
+<trim suffixOverrides="and">
+<if test="whereSql!=null">
+    and ${r"${whereSql}"}
+</if>
+</trim>
+        </where>
+        </sql>
+
+        <!-- 根据条件查询 -->
+<select id="getListByEntityAndPageInfo" resultMap="BaseResultMap">
+select
+<include refid="Base_Column_List" />
+from ${sqlName}
+<include refid="selectCondition" />
+<if test="orderBy!=null">
+    ${r"${orderBy}"}
+</if>
+<if test="pageInfo!=null">
+    limit ${r"${pageInfo.size}"} offset ${r"${pageInfo.startIndex}"}
+</if>
+</select>
+
+        <!-- 查询总数 -->
+<select id="getTotalByEntity" resultType="java.lang.Integer">
+select count(*) from ${sqlName}
+<include refid="selectCondition" />
+</select>
+
+        </mapper>

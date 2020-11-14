@@ -1,0 +1,11 @@
+<#assign className = table.className>   
+<#assign classNameLow = table.classNameLow>   
+<#assign classNameBo = table.classNameBo > 
+<#assign classNameBoLow = table.classNameBoLow > 
+<#assign sqlName  = table.sqlName  > 
+<#assign moduleName  = table.moduleName  >
+<#assign columns  = table.columns  > 
+<#assign pkColumn  = table.pkColumn  > 
+<#assign pkColumns  = table.pkColumns  > 
+<#assign idColumn  = table.idColumn  > 
+<#assign notPkColumns    = table.notPkColumns    > 

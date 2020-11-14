@@ -1,0 +1,37 @@
+[#ftl] [#include '/share.include'] <#include "/admin/include.html">
+
+<div class="pageContent">
+    <form method="post" action="<@s.url '/admin/${moduleName}/${classNameLow}/update'/>" class="pageForm required-validate"
+        onsubmit="return validateCallback(this,navTabAjaxDone);">
+        <input type="hidden" name="id" value="[@el2 'vo.id' /]" />
+        <div class="pageFormContent" layoutH="57">
+            <table>
+                [#list table.notPkColumns as column] [#if column.columnNameFirstLower != 'isDel' && column.columnNameFirstLower != 'createTime'&&
+                column.columnNameFirstLower != 'updateTime' && column.columnNameFirstLower != 'creatorId'&& column.columnNameFirstLower !=
+                'updateId']
+                <tr><td><label>${column.remarksFirst}: </label> <input type="text" name="${column.columnNameFirstLower}"
+                    value="[@el2 'vo.${column.columnNameFirstLower}!' /]" [#if !column.nullable] class="required" [/#if] /></td></tr> [/#if] [/#list]
+
+                <tr><td><label>
+                        已删除:<input type="checkbox" name="deleted"<#if vo.deleted> checked</#if> />
+                    </label></td></tr>
+            </table>
+
+        </div>
+
+        <div class="formBar">
+            <ul>
+                <li><div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit">保存</button>
+                        </div>
+                    </div></li>
+                <li><div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">关闭</button>
+                        </div>
+                    </div></li>
+            </ul>
+        </div>
+    </form>
+</div>
