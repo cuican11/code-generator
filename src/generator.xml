@@ -39,10 +39,10 @@
     <!-- <entry key="java_typemapping.java.lang.Double">java.math.BigDecimal</entry> -->
 
     <!-- Mysql -->
-    <entry key="jdbc.url">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai</entry>
+    <entry key="jdbc.url">jdbc:mysql://localhost:3306/example?useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai</entry>
     <entry key="jdbc.driver">com.mysql.cj.jdbc.Driver</entry>
     <entry key="jdbc.username">root</entry>
-    <entry key="jdbc.password">root</entry>
+    <entry key="jdbc.password">123456</entry>
 
     <!-- Oracle jdbc:oracle:oci:@tnsname_devdb
         <entry key="jdbc.url">jdbc:oracle:thin:@192.168.0.177:1521:[sid]</entry>

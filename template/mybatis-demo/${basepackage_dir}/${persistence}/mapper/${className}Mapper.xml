@@ -92,6 +92,15 @@ UPDATE ${sqlName}
         </#list>
 
         </update>
+
+
+<update id="deleteBatch" >
+update ${sqlName} set  is_del = 1 where id in
+<foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+    ${r"#{id}"}
+</foreach>
+</update>
+
 <update id="updateByPrimaryKey" parameterType="${model}" >
 update ${sqlName} set
 <#list notPkColumns as column>

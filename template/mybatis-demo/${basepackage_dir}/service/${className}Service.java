@@ -20,6 +20,8 @@ public interface ${className}Service {
 
         Integer deleteLogical(Integer id);
 
+        Integer deleteBatch(String[] ids);
+
         Integer update${className}(${className} ${classNameLow});
 
         PageControl<${className}> pageAndSortById(${className} ${classNameLow}, PageInfo pageInfo);

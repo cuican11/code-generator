@@ -40,14 +40,21 @@ public class ${className}ServiceImpl implements ${className}Service {
 	public Integer deleteLogical(Integer id){
 		${className} temp = new ${className}();
 		temp.setId(id);
-		temp.setDeleted(true);
+		temp.setIsDel(1);
 		return ${classNameLow}Dao.update(temp);
+	}
+
+    public Integer deleteBatch(String[] ids){
+		if (null == ids || ids.length <= 0){
+		return 0;
+		}
+		return ${classNameLow}Dao.deleteBatch(ids);
 	}
 
 	public Integer update${className}(${className} ${classNameLow}){
 		if (${classNameLow} == null) {
-		return 0;
-	}
+			return 0;
+		}
 
 		Integer i = ${classNameLow}Dao.update(${classNameLow});
 		return i;

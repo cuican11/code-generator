@@ -23,6 +23,7 @@ public class GeneratorMain {
 //		g.generateByTable("app_resource","template/springboot-mybatis");	//通过数据库表生成文件,template为模板的根目录
 //		g.generateByTable("third_recharge_order_detail","template/mybatis-gfb-id-string");	//通过数据库表生成文件,template为模板的根目录
 		g.generateByTable("user","template/mybatis-demo");	//通过数据库表生成文件,
+//		g.generateByTable("resource","template/mybatis-demo");	//通过数据库表生成文件,
 		// template为模板的根目录
 //		g.generateByAllTable("template/mybatis");	//自动搜索数据库中的所有表并生成文件,template为模板的根目录
 //		g.generateByAllTable("template/hibernate");
